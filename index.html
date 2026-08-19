@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イエローダック号と大蛇の海</title>
+    <link rel="icon" href="data:,">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+        color: white;
+        font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+        background: radial-gradient(circle at 50% 18%, #17638a 0%, #063852 38%, #021521 75%, #00080d 100%);
+      }
+      button {
+        font: inherit;
+      }
+      #titleScreen {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+        text-align: center;
+        z-index: 2;
+      }
+      .titleContent {
+        width: min(100%, 520px);
+        animation: appear 1.2s ease-out;
+      }
+      .smallTitle{
+        margin: 0 0 10px;
+        color: #9edfff;
+        font-size: 15px;
+        letter-spacing: 0.18em;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(32px, 9vw, 54px);
+        line-height: 1.25;
+        text-shadow: 0 0 16px rgba(64, 190, 255, 0.65), 0 4px 12px rgba(0,0,0,0.8);
+      }
+      .duckMark {
+        display: block;
+        margin: 24px 0 18px;
+        font-size: 100px;
+        filter: drop-shadow(0 0 22px rgba(255, 215, 0, 0.45)
+        );
+        animation: floatDuck 2.5s ease-in-out infinite;
+      }
+      .introduction {
+        margin: 0 auto 30px;
+        color: #d7f3ff;
+        font-size: 16px;
+        line-height: 1.9;
+      }
+      #storyButton {
+        min-width: 200px;
+        padding: 15px 28px;
+        border: 2px solid rgba(255, 255, 255, 0.75);
+        border-radius: 999px;
+        background: 
+          linear-gradient(
+            135deg,
+            #ffb21c,
+            #ff7b22
+          );
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+
+        box-shadow: 
+          0 8px 24px rgba(0, 0, 0, 0.35),
+          0 0 20px rgba(255, 174, 30, 0.25);
+      }
+      #storyButton:active {
+        transform: scale(0.96);
+      }
+
+      .deepLight {
+        position: fixed;
+        left: 50%;
+        bottom: -100px;
+        width: 220px;
+        height: 220px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        background: 
+          radial-gradient(
+            circle,
+            rgba(255, 255, 210, 0.75),
+            rgba(95,205,255,0.22) 32%,
+            transparent 70%
+          );
+        filter: blur(8px);
+        animation: mysteryLight 3s ease-in-out infinite;
+      }
+
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(25px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes floatDuck {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-3deg);
+        }
+        50% {
+          transform: translateY(-12px) rotate(3deg);
+        }
+      }
+      
+      @keyframes mysteryLight{
+        0%,
+        100% {
+          opacity: 0.45;
+          transform: translateX(-50%) scale(0.9);
+        }
+        50% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1.15);
+        }
+      }
+      #storyScreen {
+        position: fixed;
+        inset: 0;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        overflow-y: auto;
+        z-index: 3;
+        background: 
+          linear-gradient(
+            180deg,
+            #062f48,
+            #010c14
+          );
+      }
+      .storyCard {
+        width: min(100%, 720px);
+        text-align: center;
+        animation: storyAppear 0.8s ease-out;
+      }
+
+      .storyNumber{
+        margin: 0 0 14px;
+        color: #8edcff;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 0.2em;
+      }
+      .storyImage {
+        display: block;
+        width: 100%;
+        max-height: 70vh;
+        margin: 0 auto 22px;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 
+          0 16px 40px rgba(0, 0, 0, 0.55),
+          0 0 25px rgba(42, 174, 230, 0.16);
+      }
+      .storyTitle {
+        margin: 0 0 12px;
+        color: #ffffff;
+        font-size: clamp(21px, 6vw, 30px);
+        line-height: 1.4;
+      }
+      .storyText {
+        margin: 0 auto 14px;
+        max-width: 620px;
+        color: #d8f3ff;
+        font-size: 16px;
+        line-height: 1.8;
+      }
+      #nextButton {
+        min-width: 150px;
+        padding: 13px 26px;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 999px;
+        background: 
+          linear-gradient(
+            135deg,
+            #1685bd,
+            #075583
+          );
+        color: white;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      #nextButton:active {
+        transform: scale(0.96);
+      }
+
+      @keyframes storyAppear {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      #guideScreen {
+        position: fixed;
+        inset: 0;
+        display: none;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 30px 20px;
+        overflow-y: auto;
+        z-index: 4;
+        background:
+        radial-gradient(
+          circle at 50% 20%,
+          #09547b,
+          #021a29 55%,
+          #00090f
+        );
+      }
+
+      .guideCard {
+        width: min(100%, 560px);
+        text-align: center;
+        animation: storyAppear 0.8s ease-out;
+      }
+
+      .guideLabel {
+        margin: 0 0 10px;
+        color: #8edcff;
+        font-size: 13px;
+        font-weight: bold;
+        letter-spacing: 0.2em;
+      }
+
+      .guideTitle {
+        margin: 0;
+        font-size: clamp(24px, 7vw, 36px);
+      }
+
+      .guideDuck {
+        margin: 16px 0;
+        font-size: 70px;
+      }
+
+      .guideList {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .guideItem {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 14px;
+        border: 1px solid rgba(150, 225, 255, 0.3);
+        border-radius: 12px;
+        text-align: left;
+        background-color: rgba(0, 30, 48, 0.75);
+      }
+
+      .guideIcon {
+        display: flex;
+        flex: 0 0 64px;
+        justify-content: center;
+        align-items: center;
+        min-height: 52px;
+        border-radius: 10px;
+        background-color: rgba(18, 127, 184, 0.55);
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .guideItem strong {
+        font-size: 16px;
+      }
+
+      .guideItem p {
+        margin: 5px 0 0;
+        color: #cbefff;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .warningText {
+        margin: 18px 0;
+        color: #ffd98a;
+        font-weight: bold;
+      }
+
+      #missionButton {
+        min-width: 210px;
+        padding: 15px 28px;
+        border: 2px solid rgba(255, 255, 255, 0.75);
+        border-radius: 999px;
+        background:
+          linear-gradient(
+          135deg,
+          #ffb21c,
+          #ff7022
+        );
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      #missionButton:active {
+        transform: scale(0.96);
+      }
+
+      #explorationScreen {
+        position: fixed;
+        inset: 0;
+        display: none;
+        overflow: hidden;
+        z-index: 10;
+        background-color: #00050a;
+        touch-action: none;
+      }
+
+      #camera {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      
+        filter:
+          saturate(0.65)
+          contrast(1.15)
+          brightness(0.62)
+          hue-rotate(10deg);
+      }
+
+      #underwaterColor {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+
+        background:
+          linear-gradient(
+            180deg,
+          rgba(0, 95, 145, 0.4),
+          rgba(0, 24, 48, 0.68)
+        );
+      }
+
+      #darkness {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 3;
+        background-color: rgba(0, 3, 8, 0.9);
+      }
+
+      .missionStatus {
+        position: absolute;
+        top: max(16px, env(safe-area-inset-top));
+        left: 50%;
+        z-index: 4;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 15px;
+        border: 1px solid rgba(125, 215, 255, 0.4);
+        border-radius: 999px;
+        transform: translateX(-50%);
+        white-space: nowrap;
+
+        background-color: rgba(0, 16, 28, 0.72);
+        color: #cceeff;
+        font-size: 13px;
+      }
+
+      .statusLight {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #55d8ff;
+        box-shadow: 0 0 9px #55d8ff;
+      }
+    
+      #lightButton {
+        position: absolute;
+        left: 20px;
+        bottom: max(24px, env(safe-area-inset-bottom));
+        z-index: 5;
+
+        min-width: 145px;
+        padding: 13px 18px;
+
+        border: 2px solid rgba(255, 235, 155, 0.8);
+        border-radius: 999px;
+
+        background-color: rgba(20, 25, 28, 0.82);
+        color: #fff3bd;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+
+        backdrop-filter: blur(6px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+      }
+
+      #lightButton:active {
+        transform: scale(0.95);
+      }
+
+      #lightButton.lightOn {
+        background:
+        linear-gradient(
+          135deg,
+          #ffce45,
+          #ff8a24
+        );
+
+        color: #1b1200;
+
+        box-shadow:
+          0 0 22px rgba(255, 210, 75, 0.55),
+          0 6px 20px rgba(0, 0, 0, 0.45);
+      }
+
+      /* ライト点灯時の照射範囲 */
+      #darkness.lightOn {
+        background:
+          radial-gradient(
+            circle 150px at 
+              var(--light-x, 50%)
+              var(--light-y, 45%),
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 4, 10, 0.06) 48%,
+          rgba(0, 3, 8, 0.72) 72%,
+          rgba(0, 2, 6, 0.97) 100%
+        );
+      }
+
+        #duckScene {
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          pointer-events: none;
+        }
+
+        #duckScene canvas {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+        
+        #controls {
+          position: absolute;
+          right: 14px;
+          bottom: max(16px, env(safe-area-inset-bottom));
+          z-index: 5;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .controlRow {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        #controls button {
+          width: 52px;
+          height: 52px;
+          padding: 0;
+
+          border: 2px solid rgba(180, 230, 255, 0.75);
+          border-radius: 50%;
+
+          background-color: rgba(8, 71, 110, 0.8);
+          color: white;
+          font-size: 21px;
+          font-weight: bold;
+
+          cursor: pointer;
+          touch-action: none;
+          backdrop-filter: blur(6px);
+
+          box-shadow:
+            0 5px 16px rgba(0, 0, 0, 0.45);
+        }
+
+        #controls #forwardButton {
+          font-size: 12px;
+          background-color: rgba(255, 145, 32, 0.85);
+        }
+
+        #controls button:active,
+        #controls button.pressed {
+          transform: scale(0.9);
+          background-color: #ff9b25;
+        }
+        #obstacleWarning {
+          position: absolute;
+          top: 75px;
+          left: 50%;
+          z-index: 6;
+
+          display: none;
+          width: min(calc(100% - 40px), 380px);
+          padding: 13px 18px;
+
+          transform: translateX(-50%);
+
+          border: 2px solid #ffb52b;
+          border-radius: 12px;
+
+          background-color: rgba(120, 30, 5, 0.88);
+          color: white;
+
+          text-align: center;
+          font-size: 18px;
+          font-weight: bold;
+
+          box-shadow:
+            0 0 20px rgba(255, 80, 20, 0.6);
+
+          animation: warningPulse 0.7s ease-in-out infinite;
+        }
+
+        #obstacleWarning span {
+          display: block;
+          margin-top: 4px;
+          color: #ffe4b5;
+          font-size: 12px;
+          font-weight: normal;
+        }
+
+        @keyframes warningPulse {
+          0%,
+          100% {
+            opacity: 0.75;
+            transform:
+            translateX(-50%)
+            scale(0.98);
+          }
+
+          50% {
+            opacity: 1;
+            transform:
+            translateX(-50%)
+            scale(1.02);
+          }
+        }
+        #contactWarning {
+          position: absolute;
+          top: 75px;
+          left: 50%;
+          z-index: 7;
+
+          display: none;
+          width: min(calc(100% - 40px), 380px);
+          padding: 15px 18px;
+
+          transform: translateX(-50%);
+
+          border: 3px solid #ff3b30;
+          border-radius: 12px;
+
+          background-color: rgba(150, 0, 0, 0.92);
+          color: white;
+
+          text-align: center;
+          font-size: 21px;
+          font-weight: bold;
+
+          box-shadow:
+            0 0 28px rgba(255, 0, 0, 0.75);
+
+          animation: contactFlash 0.35s ease-in-out infinite;
+        }
+
+        #contactWarning span {
+          display: block;
+          margin-top: 5px;
+          color: #ffd6d3;
+          font-size: 12px;
+          font-weight: normal;
+        }
+
+        @keyframes contactFlash {
+          0%,
+          100% {
+            opacity: 0.78;
+            transform:
+            translateX(-50%)
+            scale(0.97);
+          }
+
+          50% {
+            opacity: 1;
+            transform:
+            translateX(-50%)
+            scale(1.04);
+          }
+        }
+    </style>
+    <script type="importmap">
+        {
+          "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <section id="titleScreen">
+      <div class="titleContent">
+        <p class="smallTitle">
+          UNDERWATER ADVENTURE
+        </p>
+        <h1>
+          イエローダック号と<br>
+          大蛇の海
+        </h1>
+        <span class="duckMark">🐥</span>
+        <p class="introduction">
+          未知の光が発見された、伝説の海域。<br>
+          イエローダック号の調査が、今始まる。
+        </p>
+        <button id="storyButton" type="button">
+          物語を始める
+        </button>
+      </div>
+    </section>  
+    <section id="storyScreen">
+      <div class="storyCard">
+        <p id="storyNumber" class="storyNumber">
+          STORY 01
+        </p>
+        <img
+          id="storyImage"
+          class="storyImage"
+          src="./images/story1.png"
+          alt="物語の場面"
+        >
+        <h2 id="storyTitle" class="storyTitle">
+          大蛇の海に現れた、謎の光
+        </h2>
+        <div id="storyDescription"></div>
+        <button id="nextButton" type="button">
+          次へ
+        </button>
+      </div>
+    </section>
+    <section id="guideScreen">
+      <div class="guideCard">
+        <p class="guideLabel">MISSION GUIDE</p>
+        <h2 class="guideTitle">イエローダック号を操縦せよ</h2>
+        <div class="guideDuck">🐥</div>
+        <div class="guideList">
+          <div class="guideItem">
+            <span class="guideIcon">▲▼</span>
+            <div>
+              <strong>浮上・潜水</strong>
+              <p>上下ボタンを長押しして移動します。</p>
+            </div>
+          </div>
+          <div class="guideItem">
+            <span class="guideIcon">◀▶</span>
+            <div>
+              <strong>左右移動</strong>
+              <p>左右ボタンを長押しして回避します。</p>
+            </div>
+          </div>
+          <div class="guideItem">
+            <span class="guideIcon">前進</span>
+            <div>
+              <strong>海底へ進む</strong>
+              <p>前進ボタンで暗い海の奥へ進みます。</p>
+            </div>
+          </div>
+          <div class="guideItem">
+            <span class="guideIcon">🔦</span>
+            <div>
+              <strong>ライト</strong>
+              <p>
+                ライトを点灯し、障害物を確認しながら調査して下さい。
+              </p>
+            </div>
+          </div>
+        </div>
+        <p class="warningText">暗闇の先には、何が潜んでいるか分からない。</p>
+        <button id="missionButton" type="button">調査を開始する</button>
+      </div>
+    </section>
+
+    <section id="explorationScreen">
+      <video
+        id="camera"
+        autoplay
+        playsinline
+        muted
+      ></video>
+      <div id="underwaterColor"></div>
+      <div id="duckScene"></div>
+      <div id="darkness"></div>
+      <div class="missionStatus">
+        <span class="statusLight"></span>
+        大蛇の海・深海調査中
+      </div>
+      <div id="obstacleWarning">
+        ⚠️障害物接近
+        <span>進行方向を変更してください</span>
+      </div>
+      <div id="contactWarning">
+        ✖接触しました
+        <span>障害物から離れてください</span>
+      </div>
+      <button id="lightButton" type="button">🔦 ライト ON</button>
+      <div id="controls">
+        <button id="upButton" type="button">▲</button>
+        <div class="controlRow">
+          <button id="leftButton" type="button">◀</button>
+          <button id="forwardButton" type="button">前進</button>
+          <button id="rightButton" type="button">▶</button>
+        </div>
+        <button id="downButton" type="button">▼</button>
+      </div>
+    </section>
+
+    <div class="deepLight"></div>
+    <script type="module">
+      import * as THREE from "three";
+      import {
+        GLTFLoader
+      } from "three/addons/loaders/GLTFLoader.js";
+      const storyButton = document.querySelector("#storyButton");
+      const titleScreen = document.querySelector("#titleScreen");
+      const storyScreen = document.querySelector("#storyScreen");
+      const deepLight = document.querySelector(".deepLight");
+      const storyNumber = document.querySelector("#storyNumber");
+      const storyImage = document.querySelector("#storyImage");
+      const storyTitle = document.querySelector("#storyTitle");
+      const storyDescription = document.querySelector("#storyDescription");
+      const nextButton = document.querySelector("#nextButton");
+      const guideScreen = document.querySelector("#guideScreen");
+      const missionButton = document.querySelector("#missionButton");
+      const explorationScreen = document.querySelector("#explorationScreen");
+      const camera = document.querySelector("#camera");
+      const darkness = document.querySelector("#darkness");
+      const lightButton = document.querySelector("#lightButton");
+      const duckScene = document.querySelector("#duckScene");
+      const upButton = document.querySelector("#upButton");
+      const downButton = document.querySelector("#downButton");
+      const leftButton = document.querySelector("#leftButton");
+      const rightButton = document.querySelector("#rightButton");
+      const forwardButton = document.querySelector("#forwardButton");
+      const obstacleWarning = document.querySelector("#obstacleWarning");
+      const contactWarning = document.querySelector("#contactWarning");
+
+      let lightIsOn = false;
+     /*Three.jsの準備*/
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(
+        0x06283a,
+        0.11
+      );
+
+      const threeCamera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+
+      threeCamera.position.set(0, 0, 5);
+
+      const renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true
+      });
+
+      renderer.setPixelRatio(
+        Math.min(window.devicePixelRatio, 2)
+      );
+
+      renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+      );
+
+      renderer.setClearColor(0x000000, 0);
+
+      duckScene.appendChild(renderer.domElement);
+
+    /* 3D用ライト */
+    const ambientLight =
+      new THREE.AmbientLight(0xffffff, 2);
+
+    scene.add(ambientLight);
+
+    const directionalLight =
+      new THREE.DirectionalLight(0xffffff, 3);
+
+    directionalLight.position.set(3, 5, 5);
+    scene.add(directionalLight);
+
+    /* 海中の構造物 */
+    const environmentRoot = new THREE.Group();
+    scene.add(environmentRoot);
+
+    /* 岩を作る処理 */
+    function createRock(
+      x,
+      y,
+      z,
+      scaleX,
+      scaleY,
+      scaleZ
+    ) {
+      const geometry =
+        new THREE.DodecahedronGeometry(0.55, 0);
+
+      const material =
+        new THREE.MeshStandardMaterial({
+          color: 0x354951,
+          roughness: 0.95,
+          metalness: 0.05
+        });
+
+      const rock = new THREE.Mesh(
+        geometry,
+        material
+      );
+
+      rock.position.set(x, y, z);
+
+      rock.scale.set(
+        scaleX,
+        scaleY,
+        scaleZ
+      );
+
+      rock.rotation.set(
+        Math.random() * 0.4,
+        Math.random() * 0.8,
+        Math.random() * 0.3
+      );
+
+      environmentRoot.add(rock);
+
+      return rock;
+    }
+
+    /* 複数の岩を配置 */
+    const rock1 = createRock(
+      1.55,
+      -0.65,
+      -0.3,
+      1.3,
+      0.9,
+      1.1
+    );
+
+    const rock2 = createRock(
+      2.15,
+      -1.05,
+      -1.2,
+      0.8,
+      0.6,
+      0.9
+    );
+
+    const rock3 = createRock(
+      -0.7,
+      -1.45,
+      -1.8,
+      1.1,
+      0.45,
+      0.8
+    );
+
+    /* 古い配管 */
+    const pipeGroup = new THREE.Group();
+
+    const pipeMaterial =
+      new THREE.MeshStandardMaterial({
+        color: 0x7c4c2d,
+        roughness: 0.85,
+        metalness: 0.35
+      });
+
+    const pipeGeometry =
+      new THREE.CylinderGeometry(
+        0.23,
+        0.23,
+        2.7,
+        24,
+        1,
+        false
+      );
+
+    const pipe = new THREE.Mesh(
+      pipeGeometry,
+      pipeMaterial
+    );
+
+    // 円柱を横向きにする
+    pipe.rotation.z = Math.PI / 2;
+
+    pipeGroup.add(pipe);
+
+    /* 配管の継ぎ目 */
+    const ringMaterial =
+      new THREE.MeshStandardMaterial({
+        color: 0x3d4a4d,
+        roughness: 0.7,
+        metalness: 0.65
+      });
+
+    function createPipeRing(x) {
+      const ringGeometry =
+        new THREE.TorusGeometry(
+          0.29,
+          0.055,
+          12,
+          28
+        );
+
+      const ring = new THREE.Mesh(
+        ringGeometry,
+        ringMaterial
+      );
+
+      ring.rotation.y = Math.PI / 2;
+      ring.position.x = x;
+
+      pipeGroup.add(ring);
+    }
+
+    createPipeRing(-0.9);
+    createPipeRing(0);
+    createPipeRing(0.9);
+
+    pipeGroup.position.set(
+      -1.65,
+      0.65,
+      -1.1
+    );
+
+    pipeGroup.rotation.z = -0.15;
+
+    environmentRoot.add(pipeGroup);
+
+    const dangerObjects = [
+      rock1,
+      rock2,
+      rock3,
+      pipeGroup
+    ];
+    const duckCollisionBox = new THREE.Box3();
+    const obstacleCollisionBox = new THREE.Box3();
+    const duckWarningBox = new THREE.Box3();
+    const obstacleWarningBox = new THREE.Box3();
+
+    /*アヒルのグループ */
+    const duckRoot = new THREE.Group();
+    scene.add(duckRoot);
+
+    let duckModel = null;
+
+    let duckX = 0;
+    let duckY = 0;
+    let duckZ = 0;
+
+    const movement = {
+      up: false,
+      down: false,
+      left: false,
+      right: false,
+      forward: false
+    };
+
+    const moveSpeed = 0.035;
+
+    const loader = new GLTFLoader();
+
+    loader.load(
+      "./models/Duck.glb",
+
+      function (gltf) {
+        duckModel = gltf.scene;
+
+        const box =
+          new THREE.Box3().setFromObject(duckModel);
+
+        const center =
+          box.getCenter(new THREE.Vector3());
+
+        const size =
+          box.getSize(new THREE.Vector3());
+
+        const maximumSize = Math.max(
+          size.x,
+          size.y,
+          size.z
+        );
+
+        duckModel.position.set(
+          -center.x,
+          -center.y,
+          -center.z
+        );
+
+        duckRoot.add(duckModel);
+
+        const modelScale = 2 / maximumSize;
+        duckRoot.scale.setScalar(modelScale);
+
+        // 最初は背中を向ける
+        duckModel.rotation.set(
+          0,
+          Math.PI / 2,
+          0
+        );
+
+        console.log("Duck.glbを読み込みました");
+      },
+      undefined,
+
+      function (error) {
+        console.error(
+          "Duck.glbを読み込めませんでした",
+          error
+        );
+      }
+    );
+  const duckClock = new THREE.Clock();
+
+    function animateDuck() {
+      requestAnimationFrame(animateDuck);
+
+    const elapsedTime =
+      duckClock.getElapsedTime();
+    
+    if (duckModel) {
+      if(movement.left){
+        duckX -= moveSpeed;
+      }
+      if(movement.right){
+        duckX += moveSpeed;
+      }
+      if(movement.up){
+        duckY += moveSpeed;
+      }
+      if(movement.down){
+        duckY -= moveSpeed;
+      }
+      if(movement.forward){
+        duckZ -=moveSpeed;
+      }
+      //移動できる範囲
+      duckX = THREE.MathUtils.clamp(
+        duckX,
+        -2.5,
+        2.5
+      );
+      duckY = THREE.MathUtils.clamp(
+        duckY,
+        -1.6,
+        1.6
+      );
+      duckZ = THREE.MathUtils.clamp(
+        duckZ,
+        -3.5,
+        0
+      );
+      //滑らかに移動
+      duckRoot.position.x += (duckX - duckRoot.position.x) * 0.08;
+      duckRoot.position.y += (duckY + Math.sin(elapsedTime * 2) * 0.05 - duckRoot.position.y) * 0.08;
+      duckRoot.position.z += (duckZ - duckRoot.position.z) * 0.08;
+      checkObstacleDanger();
+    }
+    renderer.render(scene, threeCamera);
+  }
+
+  function checkObstacleDanger() {
+    if (!duckModel) return;
+
+    // アヒル本体の範囲
+    duckCollisionBox.setFromObject(duckRoot);
+
+    // 接近警告用に少し広げた範囲
+    duckWarningBox
+      .copy(duckCollisionBox)
+      .expandByScalar(0.18);
+
+    let obstacleNear = false;
+    let obstacleContact = false;
+
+    for (const obstacle of dangerObjects) {
+      obstacleCollisionBox.setFromObject(obstacle);
+
+      // 実際に重なったか
+      if (
+        duckCollisionBox.intersectsBox(
+          obstacleCollisionBox
+        )
+      ) {
+        obstacleContact = true;
+        break;
+      }
+
+      // 近くまで接近したか
+      obstacleWarningBox
+        .copy(obstacleCollisionBox)
+        .expandByScalar(0.18);
+
+      if (
+        duckWarningBox.intersectsBox(
+          obstacleWarningBox
+        )
+      ) {
+        obstacleNear = true;
+      }
+    }
+
+    if (obstacleContact) {
+      contactWarning.style.display = "block";
+      obstacleWarning.style.display = "none";
+
+    } else if (obstacleNear) {
+      contactWarning.style.display = "none";
+      obstacleWarning.style.display = "block";
+
+    } else {
+      contactWarning.style.display = "none";
+      obstacleWarning.style.display = "none";
+    }
+  }
+  
+  animateDuck();
+
+  function setButtonHold(
+    button,
+    direction,
+    rotation
+  ) {
+      button.addEventListener(
+        "pointerdown",
+        function (event) {
+          event.preventDefault();
+
+        if (!duckModel) return;
+
+        movement[direction] = true;
+        button.classList.add("pressed");
+
+        duckModel.rotation.set(
+          rotation.x,
+          rotation.y,
+          rotation.z
+        );
+
+        button.setPointerCapture(event.pointerId);
+        }
+      );
+
+      function stopMoving(event) {
+        movement[direction] = false;
+        button.classList.remove("pressed");
+
+        if (
+          event.pointerId !== undefined &&
+          button.hasPointerCapture(event.pointerId)
+        ) {
+          button.releasePointerCapture(event.pointerId);
+        }
+      }
+
+      button.addEventListener("pointerup", stopMoving);
+      button.addEventListener("pointercancel", stopMoving);
+
+      button.addEventListener(
+        "lostpointercapture",
+        function () {
+          movement[direction] = false;
+          button.classList.remove("pressed");
+        }
+      );
+    }
+    // 左へ
+    setButtonHold(
+      leftButton,
+      "left",
+      {
+        x: 0,
+        y: Math.PI,
+        z: 0
+      }
+    );
+
+    // 右へ
+    setButtonHold(
+      rightButton,
+      "right",
+      {
+        x: 0,
+        y: 0,
+        z: 0
+      }
+    );
+
+    // 上へ
+    setButtonHold(
+      upButton,
+      "up",
+      {
+        x: 0,
+        y: 0,
+        z: Math.PI / 2
+      }
+    );
+
+    // 頭を下にして潜水
+    setButtonHold(
+      downButton,
+      "down",
+      {
+        x: 0,
+        y: 0,
+        z: -Math.PI / 2
+      }
+    );
+
+    // 背中を向けて奥へ進む
+    setButtonHold(
+      forwardButton,
+      "forward",
+      {
+        x: 0,
+        y: Math.PI / 2,
+        z: 0
+      }
+    );
+
+      const stories = [
+        {
+          number: "STORY 01",
+          image: "./images/story1.png",
+          title: "大蛇の海に現れた謎の光",
+          paragraphs: [
+            "伝説の海域、通称「大蛇の海」で、不思議な輝きを放つ光が発見された。",
+            "調査チーム「お宝発見し隊」は調査へ向かった。しかし、光はあまりにも深い海底にあり、従来の潜水艦では到達できないことが判明する。"
+          ]
+        },
+        {
+          number: "STORY 02",
+          image: "./images/story2.jpg",
+          title: "博士が完成させた、新たな潜水艇",
+          paragraphs: [
+            "一同が絶望に包まれたそのとき、自称天才発明家「マッド博士」が新たな潜水艇を完成させた。",
+            "その名も「イエローダック号」。古代文明の技術と博士の発明を融合させた、アヒル型の潜水艇である。"
+          ]
+        },
+        {
+          number: "STORY 03",
+          image: "./images/story3.png",
+          title: "未知なる海中探索へ",
+          paragraphs: [
+            "お宝発見し隊はイエローダック号に乗り込み、謎の光を追って大蛇の海へ出発する。",
+            "暗い海底で何が待ち受けているのか。イエローダック号のライトを頼りに、深海を調査せよ。"
+          ]
+        }
+      ];
+
+      let storyIndex = 0;
+      function showStory() {
+        const story = stories[storyIndex];
+        storyNumber.textContent = story.number;
+        storyImage.src = story.image;
+        storyTitle.textContent = story.title;
+        storyDescription.innerHTML = "";
+        story.paragraphs.forEach(function(paragraph){
+          const text = document.createElement("p");
+          text.classList.add("storyText");
+          text.textContent = paragraph;
+          storyDescription.appendChild(text);
+        });
+        if (storyIndex === stories.length - 1) {
+          nextButton.textContent = "操作説明へ";
+        } else {
+          nextButton.textContent = "次へ";
+        }
+      }
+
+      storyButton.addEventListener("click", function(){
+        titleScreen.style.display = "none";
+        deepLight.style.display = "none";
+        storyScreen.style.display = "flex";
+        storyIndex = 0;
+        showStory();
+      });
+      nextButton.addEventListener("click", function(){
+        if (storyIndex < stories.length -1){
+          storyIndex += 1;
+          showStory();
+        } else {
+          storyScreen.style.display = "none";
+          guideScreen.style.display = "flex";
+        }
+      });
+      missionButton.addEventListener("click", async function () {
+          try {
+            missionButton.disabled = true;
+            missionButton.textContent = "潜航準備中…";
+
+            const stream =
+            await navigator.mediaDevices.getUserMedia({
+              video: {
+                facingMode: {
+                  ideal: "environment"
+                }
+              },
+              audio: false
+            });
+
+            camera.srcObject = stream;
+            await camera.play();
+
+            guideScreen.style.display = "none";
+            explorationScreen.style.display = "block";
+
+          } catch (error) {
+            console.error(error);
+
+            missionButton.disabled = false;
+            missionButton.textContent = "調査を開始する";
+
+            alert(
+              "カメラを起動できませんでした。カメラの使用を許可してください。"
+            );
+          }
+        }
+      );
+      lightButton.addEventListener("click", function(){
+        lightIsOn = !lightIsOn;
+        darkness.classList.toggle("lightOn", lightIsOn);
+        lightButton.classList.toggle("lightOn", lightIsOn);
+        if(lightIsOn) {
+          lightButton.textContent = "🔦 ライト OFF";
+        } else {
+          lightButton.textContent = "🔦 ライト ON";
+        }
+      });
+
+      let movingLight = false;
+      function moveLight(event) {
+        if (!lightIsOn) return;
+        const rect = explorationScreen.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        darkness.style.setProperty(
+          "--light-x",
+          `${x}px`
+        );
+        darkness.style.setProperty(
+          "--light-y",
+          `${y}px`
+        );
+      }
+      explorationScreen.addEventListener(
+        "pointerdown", function(event){
+          //ボタンを押したときはライトを動かさない
+          if (event.target.closest("button")) return;
+          movingLight = true;
+          moveLight(event);
+        }
+      );
+      explorationScreen.addEventListener(
+        "pointermove",
+        function(event){
+          if(!movingLight) return;
+          moveLight(event);
+        }
+      );
+      window.addEventListener("pointerup", function(){
+        movingLight = false;
+      });
+
+      window.addEventListener(
+        "pointercancel",
+        function(){
+          movingLight = false;
+        }
+      );
+      window.addEventListener("resize", function(){
+        threeCamera.aspect = window.innerWidth / window.innerHeight;
+        threeCamera.updateProjectionMatrix();
+        renderer.setSize(
+          window.innerHeight,
+          window.innerWidth
+        );
+      });
+    </script>
+  </body>
+</html>
